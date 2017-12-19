@@ -23,6 +23,6 @@ import javax.servlet.http.HttpSession;
 public class ECommerce_MemberEditProfileServlet extends HttpServlet{
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-              //  out.println();
+              // testing
     }
 }
