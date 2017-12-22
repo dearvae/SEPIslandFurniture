@@ -85,6 +85,53 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
         list2.add(list.get(0));
         return list;
     }
+    
+    @GET
+    @Path("member")
+    @Produces({"application/json"})
+    public Response getMemberById(@QueryParam("id") int id) {
+       try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            String stmt = "SELECT * FROM memberentity m WHERE m.id=?";
+            PreparedStatement ps = conn.prepareStatement(stmt);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Memberentity member = new Memberentity(rs.getLong("id"));
+                member.setDob(rs.getDate("DOB"));
+                member.setAge(rs.getInt("AGE"));
+                member.setCity(rs.getString("CITY"));
+                member.setPhone(rs.getString("PHONE"));
+                member.setAccountlockstatus(rs.getBoolean("ACCOUNTLOCKSTATUS"));
+                member.setAccountactivationstatus(rs.getBoolean("ACCOUNTACTIVATIONSTATUS"));
+                member.setSecurityanswer(rs.getString("SECURITYANSWER"));
+                member.setSecurityquestion(rs.getInt("SECURITYQUESTION"));
+                member.setUnlockcode(rs.getString("UNLOCKCODE"));
+                member.setIncome(rs.getInt("INCOME"));
+                member.setIsdeleted(rs.getBoolean("ISDELETED"));
+                member.setJoindate(rs.getDate("JOINDATE"));
+                member.setEmail(rs.getString("EMAIL"));
+                member.setCumulativespending(rs.getDouble("CUMULATIVESPENDING"));
+                member.setName(rs.getString("NAME"));
+                member.setOccupation(rs.getString("OCCUPATION"));
+                member.setLoyaltypoints(rs.getInt("lOYALTYPOINTS"));
+                member.setLoyaltycardid(rs.getString("lOYALTYCARDID"));
+                
+                conn.close();
+                return Response
+                        .status(200)
+                        .entity(member)
+                        .build();
+         
+            }else{
+                return null;
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     //this function is used by ECommerce_MemberLoginServlet
     @GET
@@ -92,7 +139,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response loginMember(@QueryParam("email") String email, @QueryParam("password") String password) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?zeroDateTimeBehavior=convertToNull&user=root&password=12345");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
             String stmt = "SELECT * FROM memberentity m WHERE m.EMAIL=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, email);
