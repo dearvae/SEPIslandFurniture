@@ -30,24 +30,25 @@ import javax.ws.rs.core.Response;
  *
  * @author Jiayu
  */
-public class ECommerce_GetMember extends HttpServlet {
+public class ECommerce_GetMemberServlet extends HttpServlet {
     
     
    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        
-            final HttpSession s = request.getSession();
+            HttpSession s = request.getSession();
             String email = request.getParameter ("email");
             Client client = ClientBuilder.newClient();
             WebTarget target = client
-                    .target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity")
+                    .target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/getmemberbyemail")
                     .queryParam("email", email);
 
             Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
             Response cat = invocationBuilder.get();
             if (cat.getStatus() == 200) {
-            Member me =cat.readEntity(Member.class);
-            s.setAttribute("email", me);
-           response.sendRedirect("memberProfile.jsp");;}     
+            Member member =cat.readEntity(Member.class);
+            s.setAttribute("member", member);
+           response.sendRedirect("/IS3102_Project-war/B/SG/memberlogin.jsp");
+           }     
    }
 }
