@@ -54,11 +54,10 @@ public class ECommerce_GetMember extends HttpServlet {
             if (cat.getStatus() == 200) {
             Member member =cat.readEntity(Member.class);
             s.setAttribute("member", member);
+            s.setAttribute("memberName",member.getName());
            response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp");
            }     
-            else{
-                response.sendRedirect("/IS3102_Project-war/B/SG/memberLogin.jsp");
-            }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
