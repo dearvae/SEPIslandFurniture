@@ -43,11 +43,12 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
             String memberEmail = loginMember(email, password);
 
             if (memberEmail != null) {
-                List<CountryEntity> countries = facilityManagementBean.getListOfCountries();
-                session.setAttribute("countries", countries);
+                //List<CountryEntity> countries = facilityManagementBean.getListOfCountries();
+                //session.setAttribute("countries", countries);
 
-                session.setAttribute("email", memberEmail);
-                response.sendRedirect("ECommerce_GetMemberServlet");
+                session.setAttribute("memberEmail", memberEmail);
+               
+                response.sendRedirect("ECommerce_GetMember");
             } else {
                 result = "Login fail. Username or password is wrong or account is not activated.";
                 response.sendRedirect("/IS3102_Project-war/B/SG/memberLogin.jsp?errMsg=" + result);
