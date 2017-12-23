@@ -41,8 +41,9 @@ public class ECommerce_GetMember extends HttpServlet {
             throws ServletException, IOException {
        // response.setContentType("text/html;charset=UTF-8");
         HttpSession s = request.getSession();
-            String memberEmail = request.getParameter("memberEmail");
-        
+            String memberEmail = (String) s.getAttribute("memberEmail");
+                
+            
             Client client = ClientBuilder.newClient();
             WebTarget target = client
                     .target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/getmemberbyemail")

@@ -43,8 +43,8 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
             String memberEmail = loginMember(email, password);
 
             if (memberEmail != null) {
-                //List<CountryEntity> countries = facilityManagementBean.getListOfCountries();
-                //session.setAttribute("countries", countries);
+                List<CountryEntity> countries = facilityManagementBean.getListOfCountries();
+                session.setAttribute("countries", countries);
 
                 session.setAttribute("memberEmail", memberEmail);
                
