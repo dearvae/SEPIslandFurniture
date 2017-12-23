@@ -87,7 +87,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     }
     
     @GET
-    @Path("member")
+    @Path("getmember")
     @Produces({"application/json"})
     public Response getMemberById(@QueryParam("id") int id) {
        try {
@@ -132,6 +132,36 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             return null;
         }
     }
+    
+    @POST
+    @Path("updatemember")
+    @Consumes({"application/json"})
+    public Response updateMember(@QueryParam("id") int id, @QueryParam("name") String name, @QueryParam("phone") String phone, @QueryParam("country") String country, 
+            @QueryParam("address") String address,@QueryParam("securityQuestion") int securityQuestion,@QueryParam("securityAnswer") String securityAnswer,
+            @QueryParam("age") int age,@QueryParam("income") double income) {
+       try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            String stmt = "UPDATE memberentity SET `name`=?, `phone`=?, `country`=?, `address`=?,`securityQuestion`=?,`securityAnswer`=?,`age`=?,`income`=?, WHERE `id`=?";
+            PreparedStatement ps = conn.prepareStatement(stmt);
+            ps.setString(1, name);
+            ps.setString(2, phone);
+            ps.setString(3, country);
+            ps.setString(4, address);
+            ps.setInt(5, securityQuestion);
+            ps.setString(6, securityAnswer);
+            ps.setInt(7, age);
+            ps.setDouble(8, income);
+            ps.setInt(9, id);
+            int result = ps.executeUpdate();
+            if(result>0){
+                return Response.status(Response.Status.OK).build();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
 
     //this function is used by ECommerce_MemberLoginServlet
     @GET
