@@ -87,14 +87,14 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     }
     
     @GET
-    @Path("getmember")
+    @Path("getmemberbyemail")
     @Produces({"application/json"})
-    public Response getMemberById(@QueryParam("id") int id) {
+    public Response getMemberByEmail(@QueryParam("memberEmail") String memberEmail) {
        try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-            String stmt = "SELECT * FROM memberentity m WHERE m.id=?";
+            String stmt = "SELECT * FROM memberentity m WHERE m.email=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
-            ps.setInt(1, id);
+            ps.setString(1, memberEmail);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 Memberentity member = new Memberentity(rs.getLong("id"));
