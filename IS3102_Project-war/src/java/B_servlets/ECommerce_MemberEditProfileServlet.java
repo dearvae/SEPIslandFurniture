@@ -7,10 +7,12 @@ package B_servlets;
 
 import CommonInfrastructure.AccountManagement.AccountManagementBeanLocal;
 import CommonInfrastructure.SystemSecurity.SystemSecurityBeanLocal;
+import HelperClasses.Member;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,20 +28,45 @@ import javax.ws.rs.core.Response;
  *
  * @author BN
  */
-public class ECommerce_MemberEditProfileServlet extends HttpServlet{
+@WebServlet(name = "ECommerce_MemberEditProfileServlet", urlPatterns = {"/ECommerce_MemberEditProfileServlet"})
+public class ECommerce_MemberEditProfileServlet extends HttpServlet {
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                      Client client = ClientBuilder.newClient();
-                      WebTarget target = client.target("http://localhost:8080/RESTfulTest/webservices/CarShopServices")
-                                                                 .path("updateCar")
-                                                                 .queryParam("id", 2L)
-                                                                 .queryParam("brand", "abc")
-                                                                 .queryParam("model", "abc")
-                                                                 .queryParam("price", 1)
-                                                                 .queryParam("wheels", 1); 
-                     Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 
-                    Response editProfileSuccess = invocationBuilder.post(null);
+        HttpSession s = request.getSession();
+        String result = "";
+        String email = (String) s.getAttribute("email");
+        String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        String securityAnswer = request.getParameter("securityAnswer");
+        int age = Integer.parseInt(request.getParameter("age"));
+        double number = Double.parseDouble(request.getParameter("number"));
+
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target("http://localhost:8080/RESTfulTest/webservices/CarShopServices")
+                .queryParam("email", email)
+                .queryParam("name", name)
+                .queryParam("phone", phone)
+                .queryParam("address", address)
+                .queryParam("securityAnswer", securityAnswer)
+                .queryParam("age", age)
+                .queryParam("number", number);
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+
+        Response editProfileSuccess = invocationBuilder.post(null);
+
+        // not sure need to check
+        if (editProfileSuccess.getStatus() == 200) {
+            Member member = editProfileSuccess.readEntity(Member.class);
+            s.setAttribute("member", member);
+            result = "Account updated successfully";
+            response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp?goodMsg=" + result);
+        } else {
+            result = "Account updated unsuccessfully";
+            response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp?errMsg=" + result);
+        }
 
     }
 }

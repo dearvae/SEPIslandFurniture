@@ -82,7 +82,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label>E-mail Address</label>
-                                            <input class="form-control" required="true" value="<%=member.getEmail()%>" disabled/>
+                                            <input class="form-control" required="true" name="email" value="<%=member.getEmail()%>" disabled/>
                                         </div>
                                         <div class="form-group">
                                             <label>Phone</label>
