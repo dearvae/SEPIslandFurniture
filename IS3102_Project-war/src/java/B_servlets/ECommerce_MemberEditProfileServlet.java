@@ -15,6 +15,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -23,6 +29,17 @@ import javax.servlet.http.HttpSession;
 public class ECommerce_MemberEditProfileServlet extends HttpServlet{
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-              // testing123
+                      Client client = ClientBuilder.newClient();
+                      WebTarget target = client.target("http://localhost:8080/RESTfulTest/webservices/CarShopServices")
+                                                                 .path("updateCar")
+                                                                 .queryParam("id", 2L)
+                                                                 .queryParam("brand", "abc")
+                                                                 .queryParam("model", "abc")
+                                                                 .queryParam("price", 1)
+                                                                 .queryParam("wheels", 1); 
+                     Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+
+                    Response editProfileSuccess = invocationBuilder.post(null);
+
     }
 }
