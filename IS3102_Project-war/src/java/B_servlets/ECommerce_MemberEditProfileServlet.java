@@ -34,33 +34,35 @@ public class ECommerce_MemberEditProfileServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession s = request.getSession();
         String result = "";
-        String email = (String) s.getAttribute("email");
+
+        int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String phone = request.getParameter("phone");
+        String country = request.getParameter("country");
         String address = request.getParameter("address");
+        int securityQuestion = Integer.parseInt(request.getParameter("securityQuestion"));
         String securityAnswer = request.getParameter("securityAnswer");
         int age = Integer.parseInt(request.getParameter("age"));
-        double number = Double.parseDouble(request.getParameter("number"));
+        double income = Double.parseDouble(request.getParameter("income"));
 
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/updatemember")
-                .queryParam("email", email)
+                .queryParam("id", id)
                 .queryParam("name", name)
                 .queryParam("phone", phone)
+                .queryParam("country", country)
                 .queryParam("address", address)
+                .queryParam("securityQuestion", securityQuestion)
                 .queryParam("securityAnswer", securityAnswer)
                 .queryParam("age", age)
-                .queryParam("number", number);
-        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+                .queryParam("income", income);
 
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         Response editProfileSuccess = invocationBuilder.post(null);
 
         // not sure need to check
         if (editProfileSuccess.getStatus() == 200) {
-            Member member = editProfileSuccess.readEntity(Member.class);
-            s.setAttribute("member", member);
             result = "Account updated successfully";
             response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp?goodMsg=" + result);
         } else {
