@@ -45,7 +45,7 @@ public class ECommerce_MemberEditProfileServlet extends HttpServlet {
         double number = Double.parseDouble(request.getParameter("number"));
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/getmemberbyemail")
+        WebTarget target = client.target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/updatemember")
                 .queryParam("email", email)
                 .queryParam("name", name)
                 .queryParam("phone", phone)
