@@ -128,10 +128,11 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     
     @PUT
     @Path("updatemember")
-    @Consumes({"application/xml", "application/json"})
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces("application/json")
     public Response updateMember(@QueryParam("id") long id, @QueryParam("name") String name, @QueryParam("phone") String phone, @QueryParam("country") String country, 
             @QueryParam("address") String address,@QueryParam("securityQuestion") int securityQuestion,@QueryParam("securityAnswer") String securityAnswer,
-            @QueryParam("age") int age,@QueryParam("income") double income) {
+            @QueryParam("age") int age,@QueryParam("income") int income) {
        try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
             String stmt = "UPDATE memberentity SET name=?, phone=?, city=?, address=?,securityQuestion=?,securityAnswer=?,age=?,income=? WHERE id=?";
@@ -143,11 +144,10 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             ps.setInt(5, securityQuestion);
             ps.setString(6, securityAnswer);
             ps.setInt(7, age);
-            ps.setDouble(8, income);
+            ps.setInt(8, income);
             ps.setLong(9, id);
             int result = ps.executeUpdate();
             if(result>0){
-                 conn.close();
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception ex) {
