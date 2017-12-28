@@ -97,25 +97,18 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             ps.setString(1, memberEmail);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                Memberentity member = new Memberentity(rs.getLong("id"));
-                member.setDob(rs.getDate("DOB"));
+                Member member = new Member();    
+                member.setId(rs.getLong("ID"));
                 member.setAge(rs.getInt("AGE"));
                 member.setCity(rs.getString("CITY"));
-                member.setPhone(rs.getString("PHONE"));
-                member.setAccountlockstatus(rs.getBoolean("ACCOUNTLOCKSTATUS"));
-                member.setAccountactivationstatus(rs.getBoolean("ACCOUNTACTIVATIONSTATUS"));
-                member.setSecurityanswer(rs.getString("SECURITYANSWER"));
-                member.setSecurityquestion(rs.getInt("SECURITYQUESTION"));
-                member.setUnlockcode(rs.getString("UNLOCKCODE"));
-                member.setIncome(rs.getInt("INCOME"));
-                member.setIsdeleted(rs.getBoolean("ISDELETED"));
-                member.setJoindate(rs.getDate("JOINDATE"));
-                member.setEmail(rs.getString("EMAIL"));
-                member.setCumulativespending(rs.getDouble("CUMULATIVESPENDING"));
+                member.setAddress(rs.getString("ADDRESS"));
+                member.setPhone(rs.getString("PHONE"));                         
+                member.setSecurityAnswer(rs.getString("SECURITYANSWER"));
+                member.setSecurityQuestion(rs.getInt("SECURITYQUESTION"));
+                member.setIncome(rs.getInt("INCOME"));                           
+                member.setEmail(rs.getString("EMAIL"));             
                 member.setName(rs.getString("NAME"));
-                member.setOccupation(rs.getString("OCCUPATION"));
-                member.setLoyaltypoints(rs.getInt("lOYALTYPOINTS"));
-                member.setLoyaltycardid(rs.getString("lOYALTYCARDID"));
+            
                 
                 conn.close();
                 return Response
@@ -133,15 +126,15 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
         }
     }
     
-    @POST
+    @PUT
     @Path("updatemember")
-    @Consumes({"application/json"})
-    public Response updateMember(@QueryParam("id") int id, @QueryParam("name") String name, @QueryParam("phone") String phone, @QueryParam("country") String country, 
+    @Consumes({"application/xml", "application/json"})
+    public Response updateMember(@QueryParam("id") long id, @QueryParam("name") String name, @QueryParam("phone") String phone, @QueryParam("country") String country, 
             @QueryParam("address") String address,@QueryParam("securityQuestion") int securityQuestion,@QueryParam("securityAnswer") String securityAnswer,
             @QueryParam("age") int age,@QueryParam("income") double income) {
        try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-            String stmt = "UPDATE memberentity SET `name`=?, `phone`=?, `country`=?, `address`=?,`securityQuestion`=?,`securityAnswer`=?,`age`=?,`income`=?, WHERE `id`=?";
+            String stmt = "UPDATE memberentity SET name=?, phone=?, city=?, address=?,securityQuestion=?,securityAnswer=?,age=?,income=? WHERE id=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, name);
             ps.setString(2, phone);
@@ -151,9 +144,10 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
             ps.setString(6, securityAnswer);
             ps.setInt(7, age);
             ps.setDouble(8, income);
-            ps.setInt(9, id);
+            ps.setLong(9, id);
             int result = ps.executeUpdate();
             if(result>0){
+                 conn.close();
                 return Response.status(Response.Status.OK).build();
             }
         } catch (Exception ex) {
