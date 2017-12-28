@@ -399,6 +399,7 @@
                                                     <input type="reset" value="Reset" class="btn btn-primary"/>
                                                 </div>
                                                 <input type="hidden" value="<%=member.getEmail()%>" name="email"/>
+                                                <input type="hidden" value="<%=member.getId()%>" name="id"/>
                                             </div>
                                         </div>
                                     </form>

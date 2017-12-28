@@ -33,10 +33,19 @@ public class ECommerce_MemberEditProfileServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+//        HttpSession s = request.getSession();
+//           String id = (String) s.getAttribute("id");
+//            String name = (String) s.getAttribute("name");
+//           String phone = (String) s.getAttribute("phone");
+//        String country = (String) s.getAttribute("country");
+//        String address = (String) s.getAttribute("address");
+//        int securityQuestion = (int) s.getAttribute("securityQuestion");
+//        String securityAnswer = (String) s.getAttribute("securityAnswer");
+//        int age = (int) s.getAttribute("age");
+//        double income =(double) s.getAttribute("income");
         String result = "";
-
-        int id = Integer.parseInt(request.getParameter("id"));
+//
+        Long id = Long.parseLong(request.getParameter("id"));
         String name = request.getParameter("name");
         String phone = request.getParameter("phone");
         String country = request.getParameter("country");
@@ -59,7 +68,7 @@ public class ECommerce_MemberEditProfileServlet extends HttpServlet {
                 .queryParam("income", income);
 
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-        Response editProfileSuccess = invocationBuilder.post(null);
+        Response editProfileSuccess = invocationBuilder.put;
 
         // not sure need to check
         if (editProfileSuccess.getStatus() == 200) {
