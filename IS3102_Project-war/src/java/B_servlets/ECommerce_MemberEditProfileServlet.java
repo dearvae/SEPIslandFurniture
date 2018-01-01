@@ -31,16 +31,20 @@ import javax.ws.rs.core.Response;
  */
 @WebServlet(name = "ECommerce_MemberEditProfileServlet", urlPatterns = {"/ECommerce_MemberEditProfileServlet"})
 public class ECommerce_MemberEditProfileServlet extends HttpServlet {
-
+@EJB
+    private AccountManagementBeanLocal accountManagementBean;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String result = "";
         Long id = Long.parseLong(request.getParameter("id"));
         String name = request.getParameter("name");
+        String newPassword = request.getParameter("password");
         String phone = request.getParameter("phone");
         String country = request.getParameter("country");
         String address = request.getParameter("address");
+        String email = request.getParameter("email");
         int securityQuestion = Integer.parseInt(request.getParameter("securityQuestion"));
         String securityAnswer = request.getParameter("securityAnswer");
         int age = Integer.parseInt(request.getParameter("age"));
@@ -57,15 +61,38 @@ public class ECommerce_MemberEditProfileServlet extends HttpServlet {
                 .queryParam("securityAnswer", securityAnswer)
                 .queryParam("age", age)
                 .queryParam("income", income);
-
+              
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         Response editProfileSuccess = invocationBuilder.put(empty);
-
+       
+  
+        HttpSession s = request.getSession();
+          
+ 
         // not sure need to check
         if (editProfileSuccess.getStatus() == 200) {
+        Member member = new Member();
+        member.setName(name);
+        member.setPhone(phone);
+        member.setCity(country);
+        member.setAddress(address);
+        member.setSecurityQuestion(securityQuestion);
+        member.setSecurityAnswer(securityAnswer);
+        member.setAge(age);
+        member.setIncome(income);
+        member.setEmail(email);
+        member.setId(id);
+        s.setAttribute("member", member);
             result = "Account updated successfully";
+          
+         if(newPassword!=null&&!newPassword.equals("")){
+                
+                accountManagementBean.resetMemberPassword(email, newPassword);
+                result = "Account updated successfully. Reset Password Successful.";
+           }
             response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp?goodMsg=" + result);
         } else {
+            
             result = "Account updated unsuccessfully";
             response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp?errMsg=" + result);
         }
