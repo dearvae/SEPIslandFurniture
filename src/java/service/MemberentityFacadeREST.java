@@ -128,7 +128,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     
     @PUT
     @Path("updatemember")
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes({"text/plain,application/x-www-form-urlencoded"})
     @Produces("application/json")
     public Response updateMember(@QueryParam("id") long id, @QueryParam("name") String name, @QueryParam("phone") String phone, @QueryParam("country") String country, 
             @QueryParam("address") String address,@QueryParam("securityQuestion") int securityQuestion,@QueryParam("securityAnswer") String securityAnswer,
