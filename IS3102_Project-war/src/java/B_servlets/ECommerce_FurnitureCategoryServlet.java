@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import javax.servlet.annotation.WebServlet;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -18,7 +19,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+@WebServlet(name = "ECommerce_FurnitureCategoryServlet", urlPatterns = {"/ECommerce_FurnitureCategoryServlet"})
 public class ECommerce_FurnitureCategoryServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -33,7 +34,12 @@ public class ECommerce_FurnitureCategoryServlet extends HttpServlet {
             List<Furniture> furniture = retrieveFurnitureByCategoryRESTful(countryID, category);
             session.setAttribute("furnitures", furniture);
             String categoryEncoded = URLEncoder.encode(category);
-
+           if(furniture==null){
+               out.print("null");
+           }
+           else{
+               out.print("yesssss");
+           }
             if (furniture == null) {
                 response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp?cat=" + categoryEncoded + "&errorMsg=No furniture to be displayed.");
                 return;
@@ -47,7 +53,7 @@ public class ECommerce_FurnitureCategoryServlet extends HttpServlet {
     public List<Furniture> retrieveFurnitureByCategoryRESTful(Long countryID, String category) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
-                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.furnitureentity").path("getFurnitureListByCategory")
+                .target("http://localhost:8080/SEPWebService-Student/webresources/entity.furnitureentity").path("getFurnitureListByCategory")
                 .queryParam("countryID", countryID)
                 .queryParam("category", category);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
@@ -56,6 +62,7 @@ public class ECommerce_FurnitureCategoryServlet extends HttpServlet {
         System.out.println("status: " + response.getStatus());
 
         if (response.getStatus() != 200) {
+  
             return null;
         }
 

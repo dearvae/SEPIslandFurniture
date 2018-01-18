@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import javax.servlet.annotation.WebServlet;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -16,7 +17,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+@WebServlet(name = "ECommerce_AllRetailProductsServlet", urlPatterns = {"/ECommerce_AllRetailProductsServlet"})
 public class ECommerce_AllRetailProductsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -40,7 +41,7 @@ public class ECommerce_AllRetailProductsServlet extends HttpServlet {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
                 //.target("http://localhost:8080/IS3102_WebService/webresources/entity.retailproductentity")
-                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.retailproductentity")
+                .target("http://localhost:8080/SEPWebService-Student/webresources/entity.retailproductentity")
                 .path("getRetailProductList")
                 .queryParam("countryID", countryID);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
