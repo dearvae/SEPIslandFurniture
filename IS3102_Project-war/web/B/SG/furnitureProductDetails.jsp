@@ -91,7 +91,7 @@
                                         Width: <%=f.getWidth()%>
                                     </p>
                                     <div class="product_meta">
-                                        <span class="posted_in">Category: <a rel="tag" href="../../ECommerce_FurnitureCategoryServlet?cat=<%=category%>"><%=category%></a></span>
+                                        <span class="posted_in">Category: <a rel="tag" href="../../ECommerce_FurnitureCategoryServlet?cat=<%=f.getCategory()%>"><%=f.getCategory()%></a></span>
                                     </div>
                                     <br/><br/>
 

@@ -124,7 +124,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <%ArrayList<ShoppingCartLineItem> shoppingCart = (ArrayList<ShoppingCartLineItem>) (session.getAttribute("shoppingCart"));
+                                                        <%ArrayList<ShoppingCartLineItem> shoppingCart = (ArrayList<ShoppingCartLineItem>) (session.getAttribute("myCart"));
                                                             try {
                                                                 if (shoppingCart != null && shoppingCart.size() > 0) {
                                                                     for (ShoppingCartLineItem item : shoppingCart) {

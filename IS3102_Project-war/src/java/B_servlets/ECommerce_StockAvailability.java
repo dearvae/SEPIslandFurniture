@@ -3,6 +3,7 @@ package B_servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@WebServlet(name = "ECommerce_StockAvailability", urlPatterns = {"/ECommerce_StockAvailability"})
 public class ECommerce_StockAvailability extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,7 +58,7 @@ public class ECommerce_StockAvailability extends HttpServlet {
             System.out.println("getQuantity() SKU: " + SKU);
             Client client = ClientBuilder.newClient();
             WebTarget target = client
-                    .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.storeentity")
+                    .target("http://localhost:8080/SEPWebService-Student/webresources/entity.storeentity")
                     .path("getQuantity")
                     .queryParam("storeID", storeID)
                     .queryParam("SKU", SKU);
