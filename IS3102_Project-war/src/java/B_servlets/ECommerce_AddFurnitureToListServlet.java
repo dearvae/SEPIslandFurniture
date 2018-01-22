@@ -52,18 +52,10 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
  
             //</editor-fold>
 
-            Long storeID = Long.parseLong("10001");
+            Long storeID = Long.parseLong("59");
             int itemQty = getQuantity(storeID, SKU);
             if(itemQty>0){
-                                     //s.setAttribute("member", member);
-                ShoppingCartLineItem cartItem = new ShoppingCartLineItem();
-                cartItem.setId(id);
-                cartItem.setSKU(SKU);
-                cartItem.setPrice(price);
-                cartItem.setName(name);
-                cartItem.setQuantity(1);
-                cartItem.setCountryID(countryID);
-                cartItem.setImageURL(imageURL);
+                
                 
                 // Get Cart from Session.
         List<ShoppingCartLineItem> cart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
@@ -73,8 +65,26 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
             cart = new ArrayList<>();
             request.getSession().setAttribute("myCart", cart);
         }
-            cart.add(cartItem);
-            // And store to Session.
+        boolean isInCart = false;
+            for(ShoppingCartLineItem item: cart){
+                if(item.getSKU().equals(SKU)){
+                    item.setQuantity(item.getQuantity()+1);
+                    isInCart = true;
+                }               
+            } 
+            if(isInCart==false){
+                
+                ShoppingCartLineItem cartItem = new ShoppingCartLineItem();
+                cartItem.setId(id);
+                cartItem.setSKU(SKU);
+                cartItem.setPrice(price);
+                cartItem.setName(name);
+                cartItem.setQuantity(1);
+                cartItem.setCountryID(countryID);
+                cartItem.setImageURL(imageURL);
+                cart.add(cartItem);
+            }
+           
             
                 String result = "Item successfully added into the cart!";
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
