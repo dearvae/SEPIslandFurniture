@@ -17,7 +17,7 @@
         <script>
             var totalPrice = 0;
             for (var i = 0, n = shoppingCart.getItems().size; i < n; i++) {
-                totalPrice += shoppingCart.getItems().get(i).
+                totalPrice += shoppingCart.getItems().get(i).get();
             }
             function removeItem() {
                 checkboxes = document.getElementsByName('delete');
