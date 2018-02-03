@@ -16,9 +16,11 @@
         %>
         <script>
             var totalPrice = 0;
+           
             for (var i = 0, n = shoppingCart.getItems().size; i < n; i++) {
                 totalPrice += shoppingCart.getItems().get(i).get();
             }
+            
             function removeItem() {
                 checkboxes = document.getElementsByName('delete');
                 var numOfTicks = 0;
@@ -124,10 +126,14 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <%ArrayList<ShoppingCartLineItem> shoppingCart = (ArrayList<ShoppingCartLineItem>) (session.getAttribute("myCart"));
+                                                        <%
+                                                           
+                                                            ArrayList<ShoppingCartLineItem> myCart = (ArrayList<ShoppingCartLineItem>) (session.getAttribute("myCart"));
                                                             try {
-                                                                if (shoppingCart != null && shoppingCart.size() > 0) {
-                                                                    for (ShoppingCartLineItem item : shoppingCart) {
+                                                                
+                                                                if (myCart != null && myCart.size() > 0) {
+                                                                    for (ShoppingCartLineItem item : myCart) {
+                                                                        finalPrice += item.getPrice()*item.getQuantity();
                                                         %>
                                                         <tr class="cart_table_item">
                                                             <td class="product-remove">
@@ -158,6 +164,7 @@
                                                             <td class="product-subtotal">
                                                                 $<span class="amount" id="totalPrice<%=item.getSKU()%>">
                                                                     <%=item.getQuantity()*item.getPrice()%>
+                                                         
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -173,20 +180,19 @@
                                                             <td></td>
                                                             <td></td>
                                                             <td class="product-subtotal" style="font-weight: bold">
-                                                                Total: 
+                                                             
                                                             </td>
                                                             <td class="product-subtotal">
                                                                 $<span class="amount" id="finalPrice" name="finalPrice">
-
+                                                                       Total: <%=finalPrice%>
                                                                 </span>
                                                             </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                                <%if (shoppingCart != null && shoppingCart.size() > 0) {%>
+                                                <%if(myCart != null && myCart.size() > 0){%>
                                                 <div align="left"><a href="#myModal" data-toggle="modal"><button id="btnRemove" class="btn btn-primary">Remove Item(s)</button></a></div>
                                                 <div align="right"><a href="#checkoutModal" data-toggle="modal"><button id="btnCheckout" class="btn btn-primary btn-lg">Check Out</button></a></div>
-
                                                 <%} else {%>
                                                 <div align="right"><a href="#checkoutModal" data-toggle="modal"><button disabled="true" id="btnCheckout" class="btn btn-primary btn-lg">Check Out</button></a></div>
                                                 <%}%>
