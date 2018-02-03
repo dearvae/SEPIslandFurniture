@@ -41,9 +41,7 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
             String[] SKUs = request.getParameterValues("delete");
              
             List<ShoppingCartLineItem> cart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
-//            if(cart.size()==SKUs.length){
-//                cart.removeAll(cart);
-//            }
+
             int cartSize = cart.size();
             for(int u=cartSize-1;u>=0;u--){
                 for(int i=0;i<SKUs.length;i++){
