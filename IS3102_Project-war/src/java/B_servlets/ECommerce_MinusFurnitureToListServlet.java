@@ -42,11 +42,7 @@ public class ECommerce_MinusFurnitureToListServlet extends HttpServlet {
             
             List<ShoppingCartLineItem> cart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
         
-        // If null, create it.
-        if (cart == null) {
-            cart = new ArrayList<>();
-            request.getSession().setAttribute("myCart", cart);
-        }
+
             for(ShoppingCartLineItem item: cart){
                 if(item.getSKU().equals(SKU) && item.getQuantity() != 0){
                     item.setQuantity(item.getQuantity()-1);

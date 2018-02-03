@@ -5,13 +5,17 @@
  */
 package B_servlets;
 
+import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -31,18 +35,35 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ECommerce_RemoveItemFromListServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ECommerce_RemoveItemFromListServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+          HttpSession s = request.getSession();
+        try  {
+
+            String[] SKUs = request.getParameterValues("delete");
+             
+            List<ShoppingCartLineItem> cart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
+//            if(cart.size()==SKUs.length){
+//                cart.removeAll(cart);
+//            }
+            int cartSize = cart.size();
+            for(int u=cartSize-1;u>=0;u--){
+                for(int i=0;i<SKUs.length;i++){
+                    if(cart.get(u).getSKU().equals(SKUs[i])){
+                    cart.remove(cart.get(u));
+                    break;
+                    }     
+                }                 
+            } 
+            if (cart == null) {
+            cart = new ArrayList<>();
+            request.getSession().setAttribute("myCart", cart);
+        }
+            
+                String result = "Item is removed from the cart!";
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
+            }
+        
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
