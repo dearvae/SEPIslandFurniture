@@ -1090,10 +1090,6 @@
         <servlet-class>A1_servlets.AccountManagement_SecurityChallengeServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ECommerce_MinusFurnitureToListServlet</servlet-name>
-        <servlet-class>B_servlets.ECommerce_MinusFurnitureToListServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ECommerce_ShoppingCartServlet</servlet-name>
         <servlet-class>B_servlets.ECommerce_ShoppingCartServlet</servlet-class>
     </servlet>

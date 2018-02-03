@@ -5,28 +5,24 @@
  */
 package B_servlets;
 
-import HelperClasses.Member;
+import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  *
- * @author BN
+ * @author Howard
  */
-@WebServlet(name = "ECommerce_GetMember", urlPatterns = {"/ECommerce_GetMember"})
-public class ECommerce_GetMember extends HttpServlet {
+@WebServlet(name = "ECommerce_MinusFurnitureToListServlet", urlPatterns = {"/ECommerce_MinusFurnitureToListServlet"})
+public class ECommerce_MinusFurnitureToListServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,26 +35,31 @@ public class ECommerce_GetMember extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       // response.setContentType("text/html;charset=UTF-8");
         HttpSession s = request.getSession();
-            String memberEmail = (String) s.getAttribute("memberEmail");
-             System.out.print("in ECommerce_GetMember== member email============>"+memberEmail);   
+        try  {
+            String id = request.getParameter("id");
+            String SKU = request.getParameter("SKU");
             
-            Client client = ClientBuilder.newClient();
-            WebTarget target = client
-                    .target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/getmemberbyemail")
-                    .queryParam("memberEmail", memberEmail);
-
-            Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-            Response cat = invocationBuilder.get();
-            if (cat.getStatus() == 200) {
-            Member member =cat.readEntity(Member.class);
-            s.setAttribute("member", member);
-            s.setAttribute("memberName",member.getName());
-            
-           response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp");
-           }     
+            List<ShoppingCartLineItem> cart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
         
+        // If null, create it.
+        if (cart == null) {
+            cart = new ArrayList<>();
+            request.getSession().setAttribute("myCart", cart);
+        }
+            for(ShoppingCartLineItem item: cart){
+                if(item.getSKU().equals(SKU) && item.getQuantity() != 0){
+                    item.setQuantity(item.getQuantity()-1);
+                }               
+            } 
+            
+                String result = "Item is decreased from the cart!";
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
+            }
+        
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

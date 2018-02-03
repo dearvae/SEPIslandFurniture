@@ -5,7 +5,6 @@
  */
 package B_servlets;
 
-import HelperClasses.Member;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,20 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  *
- * @author BN
+ * @author Howard
  */
-@WebServlet(name = "ECommerce_GetMember", urlPatterns = {"/ECommerce_GetMember"})
-public class ECommerce_GetMember extends HttpServlet {
+@WebServlet(name = "ECommerce_RemoveItemFromListServlet", urlPatterns = {"/ECommerce_RemoveItemFromListServlet"})
+public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,26 +31,19 @@ public class ECommerce_GetMember extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       // response.setContentType("text/html;charset=UTF-8");
-        HttpSession s = request.getSession();
-            String memberEmail = (String) s.getAttribute("memberEmail");
-             System.out.print("in ECommerce_GetMember== member email============>"+memberEmail);   
-            
-            Client client = ClientBuilder.newClient();
-            WebTarget target = client
-                    .target("http://localhost:8080/SEPWebService-Student/webresources/entity.memberentity/getmemberbyemail")
-                    .queryParam("memberEmail", memberEmail);
-
-            Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
-            Response cat = invocationBuilder.get();
-            if (cat.getStatus() == 200) {
-            Member member =cat.readEntity(Member.class);
-            s.setAttribute("member", member);
-            s.setAttribute("memberName",member.getName());
-            
-           response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp");
-           }     
-        
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ECommerce_RemoveItemFromListServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ECommerce_RemoveItemFromListServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
