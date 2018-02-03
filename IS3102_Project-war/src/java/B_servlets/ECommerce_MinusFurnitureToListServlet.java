@@ -39,6 +39,7 @@ public class ECommerce_MinusFurnitureToListServlet extends HttpServlet {
         try  {
             String id = request.getParameter("id");
             String SKU = request.getParameter("SKU");
+            String result = " ";
             
             List<ShoppingCartLineItem> cart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
         
@@ -48,13 +49,18 @@ public class ECommerce_MinusFurnitureToListServlet extends HttpServlet {
             request.getSession().setAttribute("myCart", cart);
         }
             for(ShoppingCartLineItem item: cart){
-                if(item.getSKU().equals(SKU) && item.getQuantity() != 0){
+                if(item.getSKU().equals(SKU)){
+                    if (item.getQuantity() > 1) {
                     item.setQuantity(item.getQuantity()-1);
+                    result = "Item quantity reduced successfully!";
+                    }
+                    else if (item.getQuantity() == 1) {
+                     result = "Error. Quantity cannot be less than 1.";                 
+                    }
                 }               
-            } 
+            }
+             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + result);
             
-                String result = "Item is decreased from the cart!";
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
             }
         
         catch (Exception ex) {
