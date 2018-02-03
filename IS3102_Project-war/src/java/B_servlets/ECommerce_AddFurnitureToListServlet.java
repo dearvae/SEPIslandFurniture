@@ -48,12 +48,13 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
             double price = Double.parseDouble(request.getParameter("price"));
             String name = request.getParameter("name");
             String imageURL = request.getParameter("imageURL");
- Long countryID = (Long) s.getAttribute("countryID");
+            Long countryID = (Long) s.getAttribute("countryID");
  
             //</editor-fold>
 
             Long storeID = Long.parseLong("59");
             int itemQty = getQuantity(storeID, SKU);
+            int itemQtyNew = 0;
             if(itemQty>0){
                 
                 
@@ -64,13 +65,24 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         if (cart == null) {
             cart = new ArrayList<>();
             request.getSession().setAttribute("myCart", cart);
-        }
+        }                                          
         boolean isInCart = false;
             for(ShoppingCartLineItem item: cart){
                 if(item.getSKU().equals(SKU)){
-                    item.setQuantity(item.getQuantity()+1);
-                    isInCart = true;
-                }               
+                    isInCart = true;     
+                    if (itemQtyNew <= 60) {
+                                            item.setQuantity(item.getQuantity()+1); 
+                    itemQtyNew = itemQty - item.getQuantity();
+                String result = "Item not added to cart, not enough quantity available.";
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + itemQtyNew);
+                    }
+                    else {  
+                    item.setQuantity(item.getQuantity()+1); 
+                    itemQtyNew = itemQty - item.getQuantity();
+                        String result = " " + itemQty;
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + itemQty + ' ' + itemQtyNew);
+                    }
+                }
             } 
             if(isInCart==false){
                 
@@ -82,15 +94,12 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 cartItem.setQuantity(1);
                 cartItem.setCountryID(countryID);
                 cartItem.setImageURL(imageURL);
-                cart.add(cartItem);
+                cart.add(cartItem); 
             }
            
             
-                String result = "Item successfully added into the cart!";
+                String result = "Item successfully added into the cart! " + itemQty;
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
-            }else{
-                String result = "Item not added to cart, not enough quantity available.";
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + result);
             }
             
          } catch (Exception ex) {
