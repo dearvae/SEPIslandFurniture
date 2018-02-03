@@ -49,13 +49,15 @@ public class ECommerce_MinusFurnitureToListServlet extends HttpServlet {
                     if (item.getQuantity() > 1) {
                     item.setQuantity(item.getQuantity()-1);
                     result = "Item quantity reduced successfully!";
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
                     }
                     else if (item.getQuantity() == 1) {
                      result = "Error. Quantity cannot be less than 1.";                 
+                     response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + result);
                     }
                 }               
             }
-             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + result);
+
             
             }
         
