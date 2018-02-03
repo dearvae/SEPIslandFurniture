@@ -289,7 +289,7 @@
                     </div>
                 </div>
             </div>
-            <div role="dialog" class="modal fade" id="checkoutModal">
+             <div role="dialog" class="modal fade" id="checkoutModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -299,8 +299,8 @@
                             <p id="messageBox">Please check the cart items before checkout. Are you sure you want to continue?</p>
                         </div>
                         <div class="modal-footer">                        
-                            <input class="btn btn-primary" data-dismiss ="modal" name="btnCheckout" type="button" value="Confirm" onclick="checkOut()"  />
-                            <a class="btn btn-default" data-dismiss ="modal">Close</a>
+                            <input class="btn btn-primary" data-dismiss="modal" name="btnCheckout" type="button" value="Confirm" onclick="checkOut()">
+                            <a class="btn btn-default" data-dismiss="modal">Close</a>
                         </div>
                     </div>
                 </div>
