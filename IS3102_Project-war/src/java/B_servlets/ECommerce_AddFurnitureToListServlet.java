@@ -93,10 +93,6 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 cartItem.setImageURL(imageURL);
                 cart.add(cartItem); 
             }
-           
-            
-                String result = "Item successfully added into the cart! " + itemQty;
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + result);
             }
             
          } catch (Exception ex) {
