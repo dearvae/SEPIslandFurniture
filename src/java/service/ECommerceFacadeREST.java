@@ -86,12 +86,14 @@ public class ECommerceFacadeREST extends AbstractFacade<Salesrecordentity> {
            entity.setCreatedDate(date);
            entity.setAmountdue(amountPaid);
 
-          
-
             super.create(entity);
             
-            return Response.status(200)
-                           .build();
+          Long salesrecordId = entity.getId();
+            
+//            return Response.status(200)
+//                    .entity(salesrecordId.toString())
+//                           .build();
+       return Response.ok(salesrecordId.toString(), MediaType.APPLICATION_JSON).build();
             
         }catch(Exception ex) {
             ex.printStackTrace();            
@@ -115,7 +117,9 @@ public class ECommerceFacadeREST extends AbstractFacade<Salesrecordentity> {
             sale.getLineitementityList().add(lineitementity);
             super.edit(sale);
             
-            return Response.status(200).build();
+   
+       //    return Response.status(200).entity(salesrecordId).build();
+         return Response.ok(itemEntityID.toString(), MediaType.APPLICATION_JSON).build();
             
         } catch (Exception ex) {
             ex.printStackTrace();
