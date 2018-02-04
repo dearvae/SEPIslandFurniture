@@ -41,14 +41,16 @@ public class ECommerce_PaymentServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+  //      response.setContentType("text/html;charset=UTF-8");
         HttpSession s = request.getSession();
         try {
+            
 
+            
             Long countryID = (Long) s.getAttribute("countryID");
-
             Long memberId = (Long) s.getAttribute("memberId");
             List<ShoppingCartLineItem> shoppingCart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
 
@@ -66,38 +68,41 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
             Response myResponse = invocationBuilder.put(Entity.entity("", "application/json"));
 
-            if (myResponse.getStatus() == Response.Status.CREATED.getStatusCode()) {
-                int count = 0;
+            if (myResponse.getStatus() == 200) {
+               
                 for (ShoppingCartLineItem item : shoppingCart) {
                     Client clientNew = ClientBuilder.newClient();
                     WebTarget targetNew = clientNew
                             .target("http://localhost:8080/SEPWebService-Student/webresources/commerce/createEcommerceLineItemRecord")
-                            .queryParam("salesRecordID", Long.parseLong(myResponse.readEntity(String.class)))
+                            .queryParam("salesrecordId", Long.parseLong(myResponse.readEntity(String.class)))
                             .queryParam("countryID", countryID)
                             .queryParam("itemEntityID", item.getId())
                             .queryParam("quantity", item.getQuantity());
                     Invocation.Builder invocationBuilderNew = targetNew.request(MediaType.APPLICATION_JSON);
                     Response myResponseNew = invocationBuilderNew.put(Entity.entity("", "application/json"));
-                    if (myResponseNew.getStatus() == Response.Status.CREATED.getStatusCode()) {
-                        count += Integer.parseInt(myResponseNew.readEntity(String.class));
-                    }
-                }
-                if (count == shoppingCart.size()) {
+                    if (myResponseNew.getStatus() == 200) {
+
                     shoppingCart.clear();
                     s.setAttribute("myCart", shoppingCart);
                     String successResult = "Thank you for shopping at Island Furniture. You have checkout successfully!";
+
                     response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + successResult);
+                    
+//                    response.s
                 } else {
                     String failResult = "There was an error in processing your order. Please try again.";
                     response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + failResult);
-                }
+                } 
 
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-    }
+            }
+        }
+            catch (Exception e) {
+            e.printStackTrace();
+        
+            }
+        }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
