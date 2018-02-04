@@ -57,18 +57,6 @@ public class ECommerceFacadeREST extends AbstractFacade<Salesrecordentity> {
         //TODO return proper representation object
         throw new UnsupportedOperationException();
     }
-        @GET
-    @Path("checkStore")
-    public Response checkStore(@QueryParam("SKU") String SKU) throws SQLException{
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?zeroDateTimeBehavior=convertToNull&user=root&password=12345");
-            String stmt = "SELECT s.ID  FROM storeentity s, warehouseentity w, storagebinentity sb, storagebinentity_lineitementity sbli, lineitementity l, itementity i where s.WAREHOUSE_ID=w.ID and w.ID=sb.WAREHOUSE_ID and sb.ID=sbli.StorageBinEntity_ID and sbli.lineItems_ID=l.ID and l.ITEM_ID=i.ID and i.SKU=? and sb.type<>'Outbound'";
-            PreparedStatement ps = conn.prepareStatement(stmt);
-            ps.setString(1, SKU);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            long storeID = rs.getLong(1);
-            return Response.ok(storeID + "", MediaType.APPLICATION_JSON).build();
-    }
 
 
     @PUT
