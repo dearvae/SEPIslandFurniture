@@ -35,7 +35,6 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             
-            out.print("====email=========>"+email);
             Cookie cookie = new Cookie("memberId", email);
             cookie.setMaxAge(60 * 60); //1 hour
             response.addCookie(cookie);
@@ -49,7 +48,6 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
                 session.setAttribute("countries", countries);
 
                 session.setAttribute("memberEmail", memberEmail);
-               out.print("I m ok===========>");
                 response.sendRedirect("ECommerce_GetMember");
             } else {
                 result = "Login fail. Username or password is wrong or account is not activated.";
