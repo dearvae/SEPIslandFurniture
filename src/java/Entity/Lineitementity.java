@@ -56,6 +56,9 @@ public class Lineitementity implements Serializable {
     @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID")
     @ManyToOne
     private Itementity itemId;
+//    @ManyToOne
+//    private Salesrecordentity salesrecordId;
+        
 
     public Lineitementity() {
     }
@@ -96,6 +99,15 @@ public class Lineitementity implements Serializable {
         this.itemId = itemId;
     }
 
+//    public Salesrecordentity getSalesrecordId() {
+//        return salesrecordId;
+//    }
+//
+//    public void setSalesrecordId(Salesrecordentity salesrecordId) {
+//        this.salesrecordId = salesrecordId;
+//    }
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -130,5 +142,5 @@ public class Lineitementity implements Serializable {
     public void setMemberentityList(List<Memberentity> memberentityList) {
         this.memberentityList = memberentityList;
     }
-
+    
 }

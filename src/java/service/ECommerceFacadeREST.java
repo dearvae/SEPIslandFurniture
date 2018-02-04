@@ -1,8 +1,12 @@
 package service;
 
 import Entity.Countryentity;
+import Entity.Itementity;
 import Entity.Lineitementity;
 import Entity.Member;
+import Entity.Memberentity;
+import Entity.Salesrecordentity;
+import static Entity.Salesrecordentity_.createdDate;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +17,9 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -30,14 +36,19 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("commerce")
-public class ECommerceFacadeREST {
 
+@Stateless
+@Path("commerce")
+public class ECommerceFacadeREST extends AbstractFacade<Salesrecordentity> {
+
+    @PersistenceContext(unitName = "WebService")
+    private EntityManager em;
+    
     @Context
     private UriInfo context;
 
     public ECommerceFacadeREST() {
-
+        super(Salesrecordentity.class);
     }
 
     @GET
@@ -46,113 +57,78 @@ public class ECommerceFacadeREST {
         //TODO return proper representation object
         throw new UnsupportedOperationException();
     }
+        @GET
+    @Path("checkStore")
+    public Response checkStore(@QueryParam("SKU") String SKU) throws SQLException{
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?zeroDateTimeBehavior=convertToNull&user=root&password=12345");
+            String stmt = "SELECT s.ID  FROM storeentity s, warehouseentity w, storagebinentity sb, storagebinentity_lineitementity sbli, lineitementity l, itementity i where s.WAREHOUSE_ID=w.ID and w.ID=sb.WAREHOUSE_ID and sb.ID=sbli.StorageBinEntity_ID and sbli.lineItems_ID=l.ID and l.ITEM_ID=i.ID and i.SKU=? and sb.type<>'Outbound'";
+            PreparedStatement ps = conn.prepareStatement(stmt);
+            ps.setString(1, SKU);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            long storeID = rs.getLong(1);
+            return Response.ok(storeID + "", MediaType.APPLICATION_JSON).build();
+    }
 
-    @POST
+
+    @PUT
     @Path("createEcommerceTransactionRecord")
     @Produces({"application/json"})
     @Consumes({"application/xml", "application/json"})
     public Response createEcommerceTransactionRecord(@QueryParam("memberID") Long memberID, @QueryParam("amountPaid") double amountPaid,
             @QueryParam("countryID") Long countryID) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        String currentDate = dateFormat.format(date); //2016-11-16 12:08:43
-        int countryid = countryID.intValue();
-        String currency;
-          switch (countryid) {
-            case 25:  currency = "SGD";
-                     break;
-            case 26:  currency = "MYR";
-                     break;
-            case 27:   currency= "IDR";
-                     break;
-            case 28:  currency = "USD";
-                     break;
-            case 29:   currency = "RMB";
-                     break;
-            case 65:  currency = "EUR";
-                     break;
-         
-            default:  currency = "SGD";
-                     break;
+        try{
+           Date date = new Date();
+           Salesrecordentity entity = new Salesrecordentity();
+           entity.setMemberId(em.find(Memberentity.class, memberID));
+           entity.setAmoutPaid(amountPaid);
+           entity.setCurrency(em.find(Countryentity.class,countryID).getCurrency());
+           entity.setCreatedDate(date);
+           entity.setAmountdue(amountPaid);
+
+          
+
+            super.create(entity);
+            
+            return Response.status(200)
+                           .build();
+            
+        }catch(Exception ex) {
+            ex.printStackTrace();            
         }
+    
 
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-             String stmt = "INSERT INTO salesrecordentity (AMOUNTDUE, AMOUNTPAID, AMOUNTPAIDUSINGPOINTS,CREATEDDATE,CURRENCY,LOYALTYPOINTSDEDUCTED,POSNAME,MEMBER_ID,STORE_ID)VALUES (?,?, 0,?,?,0,'Counter 1',?,59)";
-           // String stmt = "INSERT INTO salesrecordentity (AMOUNTDUE, AMOUNTPAID, AMOUNTPAIDUSINGPOINTS,CREATEDDATE,CURRENCY,LOYALTYPOINTSDEDUCTED,POSNAME,MEMBER_ID,STORE_ID)VALUES (12,12, 0,'2016-11-16 12:08:01','SGD',0,'Counter 1',23,59);";
-            PreparedStatement ps = conn.prepareStatement(stmt);
-            ps.setDouble(1, amountPaid);
-            ps.setDouble(2, amountPaid);
-            ps.setString(3, currentDate);
-            ps.setString(4, currency);
-            ps.setLong(5, memberID);
-
-            int i = ps.executeUpdate();
-//            ResultSet rs = ps.getGeneratedKeys();
-//            if (rs.next()) {
-//                long id = rs.getLong(1);
-//                System.out.println("Inserted ID -" + id); // display inserted record
-//            }
-//            if (i > 0) {
-//                PreparedStatement ps2 = conn.prepareStatement(stmt);
-//                stmt = "select id from salesrecordentity where createdDate = '2016-11-16 12:08:06'";
-//                ps2 = conn.prepareStatement(stmt);
-//                //    ps.setString(1, currentDate);
-//                ResultSet rs = ps2.executeQuery();
-//                rs.close();
-//
-//                conn.close();
-//                return Response
-//                        .status(201)
-//                        .entity(rs)
-//                        .build();
-//            }
-
-        } catch (SQLException e) {
-            while (e != null) {
-                String errorMessage = e.getMessage();
-                System.err.println("sql error message:" + errorMessage);
-
-                // This vendor-independent string contains a code.
-                String sqlState = e.getSQLState();
-                System.err.println("sql state:" + sqlState);
-
-                int errorCode = e.getErrorCode();
-                System.err.println("error code:" + errorCode);
-                // String driverName = conn.getMetaData().getDriverName();
-                // System.err.println("driver name:"+driverName);
-                // processDetailError(drivername, errorCode);
-                e = e.getNextException();
-            }
-
-        }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @PUT
     @Path("createEcommerceLineItemRecord")
     @Produces({"application/json"})
-    public Response createEcommerceLineItemRecord(@QueryParam("salesRecordID") Long salesRecordID, @QueryParam("itemEntityID") Long itemEntityID,
-            @QueryParam("quantity") Integer quantity, @QueryParam("countryID") Long countryID) {
+    public Response createEcommerceLineItemRecord(@QueryParam("salesrecordId") Long salesrecordId, @QueryParam("itemEntityID") Long itemEntityID) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-            //     String stmt = "UPDATE salesrecordentity_lineitementity set salesRecordID=?, itemEntityID=?, quantity=?, countryID=? WHERE id=?";
-            String stmt = "";
-            PreparedStatement ps = conn.prepareStatement(stmt);
-            ps.setLong(1, salesRecordID);
-            ps.setLong(2, itemEntityID);
-            ps.setInt(3, quantity);
-            ps.setLong(4, countryID);
-            int result = ps.executeUpdate();
-            if (result > 0) {
-                conn.close();
-                return Response.status(200).build();
-            }
+            Lineitementity lineitementity = new Lineitementity ();
+//            lineitementity.setSalesrecordId();
+            lineitementity.setItemId(em.find(Itementity.class, itemEntityID));
+            getEntityManager().persist(lineitementity);
+
+            Salesrecordentity sale = em.find(Salesrecordentity.class,salesrecordId);
+            sale.getLineitementityList().add(lineitementity);
+            super.edit(sale);
+            
+            return Response.status(200).build();
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
+    
+    
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
 
 }
 
