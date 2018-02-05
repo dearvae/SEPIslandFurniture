@@ -48,7 +48,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         try {
 
             Long countryID = (Long) s.getAttribute("countryID");
-            Long memberId = (Long) s.getAttribute("memberId");
+            Long memberID = (Long) s.getAttribute("memberId");
             List<ShoppingCartLineItem> shoppingCart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
 
             double amountPaid = 0.0;
@@ -59,7 +59,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             Client client = ClientBuilder.newClient();
             WebTarget target = client
                     .target("http://localhost:8080/SEPWebService-Student/webresources/commerce/createEcommerceTransactionRecord")
-                    .queryParam("memberID", memberId)
+                    .queryParam("memberId", memberID)
                     .queryParam("countryID", countryID)
                     .queryParam("amountPaid", amountPaid);
             Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
