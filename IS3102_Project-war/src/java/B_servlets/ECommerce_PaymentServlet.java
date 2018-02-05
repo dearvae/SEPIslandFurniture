@@ -5,13 +5,25 @@
  */
 package B_servlets;
 
+import EntityManager.MemberEntity;
+import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -31,18 +43,67 @@ public class ECommerce_PaymentServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ECommerce_PaymentServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ECommerce_PaymentServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        //      response.setContentType("text/html;charset=UTF-8");
+        HttpSession s = request.getSession();
+        try {
+
+            Long countryID = (Long) s.getAttribute("countryID");
+            Long memberId = (Long) s.getAttribute("memberId");
+            List<ShoppingCartLineItem> shoppingCart = (List<ShoppingCartLineItem>) request.getSession().getAttribute("myCart");
+
+            double amountPaid = 0.0;
+            for (ShoppingCartLineItem item : shoppingCart) {
+                amountPaid += item.getPrice() * item.getQuantity();
+            }
+
+            Client client = ClientBuilder.newClient();
+            WebTarget target = client
+                    .target("http://localhost:8080/SEPWebService-Student/webresources/commerce/createEcommerceTransactionRecord")
+                    .queryParam("memberID", memberId)
+                    .queryParam("countryID", countryID)
+                    .queryParam("amountPaid", amountPaid);
+            Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+            Response myResponse = invocationBuilder.put(Entity.entity("", "application/json"));
+            Boolean success = Boolean.TRUE;
+            if (myResponse.getStatus() == 200) {
+                    Long id =Long.parseLong(myResponse.readEntity(String.class));
+                for (ShoppingCartLineItem item : shoppingCart) {
+                    Client clientNew = ClientBuilder.newClient();
+                    WebTarget targetNew = clientNew
+                            .target("http://localhost:8080/SEPWebService-Student/webresources/commerce/createEcommerceLineItemRecord")
+                            .queryParam("salesrecordId",id )
+                            .queryParam("countryID", countryID)
+                            .queryParam("itemEntityID", item.getId())
+                            .queryParam("quantity", item.getQuantity());
+                    Invocation.Builder invocationBuilderNew = targetNew.request(MediaType.APPLICATION_JSON);
+                    Response myResponseNew = invocationBuilderNew.put(Entity.entity("", "application/json"));
+                    if (myResponseNew.getStatus() == 200) {
+
+//                    response.s
+                    } else {
+                        success = Boolean.FALSE;
+                        break;
+
+                    }
+
+                }
+
+                if (success) {
+                    shoppingCart.clear();
+                    s.setAttribute("myCart", shoppingCart);
+                    String successResult = "Thank you for shopping at Island Furniture. You have checkout successfully!";
+
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?goodMsg=" + successResult);
+                }
+
+            } else {
+                String failResult = "There was an error in processing your order. Please try again.";
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp?errMsg=" + failResult);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
     }
 
