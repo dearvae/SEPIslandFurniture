@@ -55,6 +55,7 @@ public class ECommerce_GetMember extends HttpServlet {
             Member member =cat.readEntity(Member.class);
             s.setAttribute("member", member);
             s.setAttribute("memberName",member.getName());
+            s.setAttribute("memberId",member.getId());
             
            response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp");
            }     
