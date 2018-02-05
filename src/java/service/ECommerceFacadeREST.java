@@ -6,7 +6,6 @@ import Entity.Lineitementity;
 import Entity.Member;
 import Entity.Memberentity;
 import Entity.Salesrecordentity;
-import static Entity.Salesrecordentity_.createdDate;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -63,7 +62,7 @@ public class ECommerceFacadeREST extends AbstractFacade<Salesrecordentity> {
     @Path("createEcommerceTransactionRecord")
     @Produces({"application/json"})
     @Consumes({"application/xml", "application/json"})
-    public Response createEcommerceTransactionRecord(@QueryParam("memberID") Long memberID, @QueryParam("amountPaid") double amountPaid,
+    public Response createEcommerceTransactionRecord(@QueryParam("memberId") Long memberID, @QueryParam("amountPaid") double amountPaid,
             @QueryParam("countryID") Long countryID) {
         try{
            Date date = new Date();
@@ -97,7 +96,7 @@ public class ECommerceFacadeREST extends AbstractFacade<Salesrecordentity> {
     public Response createEcommerceLineItemRecord(@QueryParam("salesrecordId") Long salesrecordId, @QueryParam("itemEntityID") Long itemEntityID) {
         try {
             Lineitementity lineitementity = new Lineitementity ();
-//            lineitementity.setSalesrecordId();
+
             lineitementity.setItemId(em.find(Itementity.class, itemEntityID));
             getEntityManager().persist(lineitementity);
 
